@@ -1,0 +1,153 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Heart, Eye, Calendar, Fuel, Settings } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+
+export function VehicleListings() {
+  const [isVisible, setIsVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 },
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  const vehicles = [
+    {
+      id: 1,
+      name: "Ford Transit - 2021",
+      description: "2.0 EcoBlue 130ps H2 Leader Van",
+      price: "$22,000",
+      image: "/ford-transit-van-2021.jpg",
+      badge: "Best Price",
+      badgeColor: "bg-green-500",
+      specs: { year: "2021", fuel: "Diesel", transmission: "Manual" },
+    },
+    {
+      id: 2,
+      name: "New XC - 2023",
+      description: "2.0 T4 Momentum 5dr Geartronic",
+      price: "$56,000",
+      image: "/volvo-xc-suv-2023-blue.jpg",
+      badge: "Best Offer",
+      badgeColor: "bg-blue-500",
+      specs: { year: "2023", fuel: "Petrol", transmission: "Automatic" },
+    },
+    {
+      id: 3,
+      name: "Audi A4 3.2 - New",
+      description: "3.2 FSI Quattro 4dr S Tronic",
+      price: "$48,000",
+      image: "/audi-a4-sedan-orange.jpg",
+      badge: "Great Price",
+      badgeColor: "bg-orange-500",
+      specs: { year: "2024", fuel: "Petrol", transmission: "Automatic" },
+    },
+    {
+      id: 4,
+      name: "Corolla Mini",
+      description: "1.8 Hybrid Design 5dr CVT",
+      price: "$38,000",
+      image: "/toyota-corolla-red-compact-car.jpg",
+      badge: "New",
+      badgeColor: "bg-red-500",
+      specs: { year: "2024", fuel: "Hybrid", transmission: "CVT" },
+    },
+  ]
+
+  return (
+    <section ref={sectionRef} className="py-16 px-6 bg-muted/30">
+      <div className="max-w-7xl mx-auto">
+        <div
+          className={`flex items-center justify-between mb-8 transform transition-all duration-700 ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
+          <h2 className="text-2xl font-bold text-foreground">Explore All Vehicles</h2>
+          <a href="#" className="text-accent hover:underline">
+            View All →
+          </a>
+        </div>
+
+        <div
+          className={`flex gap-4 mb-8 transform transition-all duration-700 delay-200 ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
+          <Button variant="default" className="bg-primary">
+            All Brands
+          </Button>
+          <Button variant="outline">New Cars</Button>
+          <Button variant="outline">Used Cars</Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {vehicles.map((vehicle, index) => (
+            <Card
+              key={vehicle.id}
+              className={`group hover:shadow-lg transition-all duration-500 hover:-translate-y-1 transform ${
+                isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
+              style={{ transitionDelay: `${400 + index * 100}ms` }}
+            >
+              <div className="relative">
+                <img
+                  src={vehicle.image || "/placeholder.svg"}
+                  alt={vehicle.name}
+                  className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-t-lg"
+                />
+                <Badge className={`absolute top-3 left-3 ${vehicle.badgeColor} text-white`}>{vehicle.badge}</Badge>
+                <Button size="icon" variant="ghost" className="absolute top-3 right-3 bg-white/80 hover:bg-white">
+                  <Heart className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg mb-1">{vehicle.name}</h3>
+                <p className="text-muted-foreground text-sm mb-3">{vehicle.description}</p>
+
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {vehicle.specs.year}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Fuel className="w-3 h-3" />
+                    {vehicle.specs.fuel}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Settings className="w-3 h-3" />
+                    {vehicle.specs.transmission}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-bold text-accent">{vehicle.price}</span>
+                  <Button size="sm" className="bg-accent hover:bg-accent/90">
+                    <Eye className="w-4 h-4 mr-1" />
+                    View Details
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
